@@ -6,6 +6,7 @@ interface TaskInputProps {
 
 export default function TaskInput({ onAddTask }: TaskInputProps) {
   const [text, setText] = useState('');
+  const [isFocused, setIsFocused] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -17,47 +18,78 @@ export default function TaskInput({ onAddTask }: TaskInputProps) {
 
   return (
     <form onSubmit={handleSubmit} style={styles.container}>
-      <input
-        type="text"
-        value={text}
-        onChange={(e) => setText(e.target.value)}
-        placeholder="What's on your mind?"
-        style={styles.input}
-      />
-      <button type="submit" style={styles.button} disabled={!text.trim()}>
-        Add Task
-      </button>
+      <div style={{
+        ...styles.inputWrapper,
+        borderColor: isFocused ? 'var(--accent-primary)' : 'var(--card-border)',
+        boxShadow: isFocused ? '0 0 0 2px var(--accent-glow)' : 'none',
+      }}>
+        <input
+          type="text"
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => setIsFocused(false)}
+          placeholder="Add a new task..."
+          style={styles.input}
+        />
+        <button
+          type="submit"
+          disabled={!text.trim()}
+          style={{
+            ...styles.button,
+            opacity: text.trim() ? 1 : 0.5,
+            transform: text.trim() ? 'scale(1)' : 'scale(0.95)',
+          }}
+        >
+          <span style={styles.btnIcon}>+</span>
+        </button>
+      </div>
     </form>
   );
 }
 
 const styles: { [key: string]: React.CSSProperties } = {
   container: {
+    marginBottom: '2.5rem',
+  },
+  inputWrapper: {
     display: 'flex',
-    gap: '12px',
-    marginBottom: '2rem',
+    alignItems: 'center',
+    background: 'rgba(15, 23, 42, 0.4)',
+    borderRadius: '16px',
+    border: '1px solid transparent',
+    padding: '8px',
+    transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
   },
   input: {
     flex: 1,
-    padding: '16px 20px',
-    borderRadius: '12px',
-    border: '1px solid rgba(255, 255, 255, 0.1)',
-    background: 'rgba(15, 23, 42, 0.6)',
+    background: 'transparent',
+    border: 'none',
     color: 'var(--text-primary)',
-    fontSize: '1rem',
+    fontSize: '1.1rem',
+    padding: '12px 16px',
     outline: 'none',
-    transition: 'all 0.3s ease',
-    boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.1)',
+    minWidth: 0,
+    fontFamily: 'inherit', // Inherit from parent (Outfit)
   },
   button: {
-    padding: '0 24px',
+    width: '42px',
+    height: '42px',
     borderRadius: '12px',
     border: 'none',
-    background: 'linear-gradient(135deg, var(--accent-primary), #4f46e5)',
+    background: 'linear-gradient(135deg, var(--accent-primary), var(--accent-secondary))',
     color: 'white',
-    fontWeight: 600,
     cursor: 'pointer',
-    transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    transition: 'all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1)',
     boxShadow: '0 4px 12px var(--accent-glow)',
+    marginLeft: '8px',
+  },
+  btnIcon: {
+    fontSize: '1.5rem',
+    lineHeight: 1,
+    fontWeight: 300,
   }
 };

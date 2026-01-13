@@ -1,4 +1,5 @@
 import React from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 import TaskItem from './TaskItem';
 
 interface Task {
@@ -16,16 +17,19 @@ export default function TaskList({ tasks, onToggle }: TaskListProps) {
     if (tasks.length === 0) {
         return (
             <div style={styles.emptyState}>
-                <p style={styles.emptyText}>No tasks yet. Start by adding one above!</p>
+                <h3 style={{ color: 'var(--text-secondary)', marginBottom: '8px' }}>All caught up!</h3>
+                <p style={styles.emptyText}>Add a new task to get started.</p>
             </div>
         );
     }
 
     return (
         <div style={styles.list}>
-            {tasks.map((task) => (
-                <TaskItem key={task.id} task={task} onToggle={onToggle} />
-            ))}
+            <AnimatePresence mode="popLayout">
+                {tasks.map((task) => (
+                    <TaskItem key={task.id} task={task} onToggle={onToggle} />
+                ))}
+            </AnimatePresence>
         </div>
     );
 }
@@ -38,12 +42,12 @@ const styles: { [key: string]: React.CSSProperties } = {
     emptyState: {
         textAlign: 'center',
         padding: '4rem 2rem',
-        background: 'rgba(255,255,255,0.03)',
+        background: 'var(--card-highlight)',
         borderRadius: '16px',
         border: '1px dashed var(--card-border)',
+        color: 'var(--text-tertiary)',
     },
     emptyText: {
-        color: 'var(--text-tertiary)',
-        fontSize: '1.1rem',
+        fontSize: '0.95rem',
     }
 };
